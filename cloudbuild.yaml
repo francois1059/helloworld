@@ -1,4 +1,10 @@
 steps:
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['install']
+ - name: 'node'
+  entrypoint: 'npm'
+  args: ['test']
 - name: 'gcr.io/cloud-builders/docker'
   script: |
     docker build -t europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME .
