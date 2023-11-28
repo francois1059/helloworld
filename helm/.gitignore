@@ -1,0 +1,3 @@
+out
+pocketbase-helm-*.tgz
+values.*.yaml

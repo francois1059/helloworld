@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pocketbase-helm.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.deploymentStrategy.type }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "pocketbase-helm.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "pocketbase-helm.fullname" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.flags.encryptionEnv }}
+          env:
+            - name: PB_ENCRYPTION_KEY
+              value: {{ .Values.flags.encryptionEnv | quote }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.appPort }}
+              protocol: TCP
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: {{ .Values.persistence.mountPath }}
+              name: {{ include "pocketbase-helm.fullname" . }}-pv
+      volumes:
+        - name: {{ include "pocketbase-helm.fullname" . }}-pv
+          persistentVolumeClaim:
+            claimName: {{ include "pocketbase-helm.fullname" . }}-pvc

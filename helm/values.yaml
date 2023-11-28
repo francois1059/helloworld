@@ -1,0 +1,76 @@
+## @section PocketBase configuration
+##
+
+## @param replicaCount How many replicas of pocketbase should be deployed, it is ignored if autoscaling is enabled
+## @param nameOverride String to partially override the deployment name (will maintain the release name)
+## @param fullnameOverride String to fully override the deployment name
+##
+replicaCount: 1
+nameOverride: ""
+fullnameOverride: pocketbase
+appPort: 8090
+
+## @param flags.encryptionEnv The PB_ENCRYPTION_KEY 32 characters string, see https://pocketbase.io/docs/going-to-production/#:~:text=enable%20settings%20encryption for more infos
+##
+flags:
+  encryptionEnv: ""
+
+# Deployment strategy
+# RollingUpdate is the default, but we cannot use it because of the pvc in readone mode.
+deploymentStrategy:
+  type: Recreate
+
+## @param image.repository The repository (and image name) where the pocketbase docker image is stored
+## @param image.pullPolicy Deployment pull policy
+## @param image.tag Overrides the image tag whose default is the chart appVersion
+##
+image:
+  repository: europe-west1-docker.pkg.dev/locomotion-sandbox/locomotion-sandbox-registry/pocketmailer
+  pullPolicy: IfNotPresent
+  tag: "1.0"
+
+## @param persistence.storage How much storage space should be reserved for PocketBase
+## @param persistence.storageClass The PV storage class (a storageClass with Retain policy is recommended)
+##
+persistence:
+  storage: 10Gi
+  storageClass: ""
+  mountPath: /pocketbase/pb_data
+
+## @param ingress.enabled Whether to enable the ingress
+## @param ingress.clusterIssuer The Cert Manager cluster issuer (https://cert-manager.io/docs/configuration/acme/http01/)
+## @param ingress.dns The dns name which will expose PocketBase
+ingress:
+  enabled: true
+  dns: "mailer-staging.claranet.com"
+  className: gce
+  annotations:
+    kubernetes.io/ingress.class: gce
+    cloud.google.com/neg: '{"ingress": true}'
+    kubernetes.io/ingress.global-static-ip-name: mailer-ip4
+    ingress.gcp.kubernetes.io/pre-shared-cert: mailer
+
+## Liveness & readiness probes
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+
+## @param resources The resources associated with the deployment
+resources: {}
+
+## @param autoscaling.enabled Whether to enable autoscaling
+## @param autoscaling.minReplicas number of min replicas
+## @param autoscaling.maxReplicas number of max replicas
+## @param autoscaling.targetCPUUtilizationPercentage targetCPUUtilizationPercentage
+## @param autoscaling.targetMemoryUtilizationPercentage targetMemoryUtilizationPercentage
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
