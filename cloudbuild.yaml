@@ -2,7 +2,7 @@ steps:
 - name: 'node'
   entrypoint: 'npm'
   args: ['install']
- - name: 'node'
+- name: 'node'
   entrypoint: 'npm'
   args: ['test']
 - name: 'gcr.io/cloud-builders/docker'
