@@ -16,5 +16,4 @@ steps:
   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
 images:
 - 'europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME'
-options:
-  logging: CLOUD_LOGGING_ONLY
+tags: ['cloud-builders-community']
