@@ -10,14 +10,14 @@ steps:
     docker build -t europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME .
   automapSubstitutions: true
 
-- name: 'gcr.io/cloud-builders/kubectl'
-  id: Configure kubectl
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
-  - 'KUBECONFIG=/workspace/.kube/config'
-  args:
-    - cluster-info
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   id: Configure kubectl
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
+#   - 'KUBECONFIG=/workspace/.kube/config'
+#   args:
+#     - cluster-info
 
 - name: 'gcr.io/$PROJECT_ID/helm'
   id: Deploy chart
@@ -29,7 +29,8 @@ steps:
     - mailer
     - ./helm
   env:
-    - KUBECONFIG=/workspace/.kube/config
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
 
 images:
 - 'europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME'
