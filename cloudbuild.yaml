@@ -19,7 +19,7 @@ steps:
 #   args:
 #     - cluster-info
 
-- name: 'gcr.io/$PROJECT_ID/helm'
+- name: 'gcr.io/$PROJECT_ID/helm:latest'
   id: Deploy chart
   args:
     - upgrade
