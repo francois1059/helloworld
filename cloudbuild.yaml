@@ -31,6 +31,7 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
+  - 'DEBUG=true'
 
 images:
 - 'europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME'
