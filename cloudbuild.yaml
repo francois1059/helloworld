@@ -9,8 +9,14 @@ steps:
   script: |
     docker build -t europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME .
   automapSubstitutions: true
-- name: 'gcr.io/$PROJECT_ID/helm'
-  args: ['upgrade', '--install', 'pocketmailer', './helm', '--namespace', 'mailer']
+- name: 'gcr.io/cloud-builders/helm'
+  args:
+  - 'upgrade'
+  - '--install'
+  - 'pocketmailer'
+  - './helm'
+  - '--namespace'
+  - 'mailer'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
