@@ -9,18 +9,27 @@ steps:
   script: |
     docker build -t europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME .
   automapSubstitutions: true
-- name: 'gcr.io/cloud-builders/helm'
-  args:
-  - 'upgrade'
-  - '--install'
-  - 'pocketmailer'
-  - './helm'
-  - '--namespace'
-  - 'mailer'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Configure kubectl
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
+  - 'KUBECONFIG=/workspace/.kube/config'
+  args:
+    - cluster-info
+
+- name: 'gcr.io/$PROJECT_ID/helm'
+  id: Deploy chart
+  args:
+    - upgrade
+    - --install
+    - pocketmailer
+    - --namespace
+    - mailer
+    - ./helm
+  env:
+    - KUBECONFIG=/workspace/.kube/config
+
 images:
 - 'europe-west1-docker.pkg.dev/$PROJECT_ID/synapps-sandbox-registry/quickstart:$TAG_NAME'
-options:
-  logging: CLOUD_LOGGING_ONLY
