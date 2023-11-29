@@ -29,7 +29,7 @@ steps:
     - mailer
     - ./helm
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west9'
+  - 'CLOUDSDK_COMPUTE_REGION=europe-west9'
   - 'CLOUDSDK_CONTAINER_CLUSTER=gke-sandbox'
   - 'DEBUG=true'
 
